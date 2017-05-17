@@ -1,38 +1,38 @@
 <template>
-
   <div class="corpo">
-    <h1 class="titulo">{{ titulo }}</h1>
 
-    <input type="search" class="filtro" placeholder="filtro por foto">
+    <h1 class="centralizado">{{ titulo }}</h1>
+
+    <input type="search" class="filtro" @input="filtro = $event.target.value" placeholder="filtre pelo título da foto">
 
     <ul class="lista-fotos">
-
-        <li class="lista-fotos-item" v-for="foto in fotos">
-
-            <meu-painel :titulo="foto.titulo">
-                <img class="imagem-responsiva" :src="foto.url" :alt="foto.titulo">
-            </meu-painel>   
-        </li>
+      <li class="lista-fotos-item" v-for="foto of fotosComFiltro">
+        <meu-painel :titulo="foto.titulo">
+          <imagem-responsiva :url="foto.url" :titulo="foto.titulo"/>
+        </meu-painel>
+      </li>
     </ul>
+
   </div>
-
 </template>
-
-
 
 <script>
 
-// agora temos apenas a propriedade `fotos` que é um array que possui dois objetos que possuem as propriedades 
-//`url` e `titulo`, cada um com seu valor.
-import Painel from './components/shared/painel/Painel.vue'
+import Painel from './components/shared/painel/Painel.vue';
+import ImagemResponsiva from './components/shared/imagem-responsiva/ImagemResponsiva.vue'
+
 export default {
 
   components: {
-    'meu-painel': Painel
+
+    'meu-painel': Painel,
+    'imagem-responsiva' : ImagemResponsiva
   },
-  data() {
+
+  data () {
     return {
-      titulo: 'Imagens',
+      titulo: 'CadernOnline', 
+
       fotos: [],
 
       filtro: ''
@@ -40,54 +40,50 @@ export default {
   },
 
   computed: {
-    fotoComFiltro(){
 
-      if(this.filtro){
+    fotosComFiltro() {
 
-        /* se tiver filtro */
-        return[];
-        
-      } else{
+      if (this.filtro) {
+        let exp = new RegExp(this.filtro.trim(), 'i');
+        return this.fotos.filter(foto => exp.test(foto.titulo));
+      } else {
         return this.fotos;
-        /* se não tiver ele vai retonar a lista de fotos completa*/
       }
+
     }
   },
 
-  //detro do created que eu carrego a api das fotos
-  created(){
+  created() {
+
     this.$http
-      .get ('http://localhost:3000/v1/fotos')
+      .get('http://localhost:3000/v1/fotos')
       .then(res => res.json())
       .then(fotos => this.fotos = fotos, err => console.log(err));
-
   }
 }
 </script>
 <style>
-  .titulo{
+
+  .centralizado {
     text-align: center;
   }
 
-  .corpo{
+  .corpo {
     font-family: Helvetica, sans-serif;
     margin: 0 auto;
     width: 96%;
   }
 
-  .lista-fotos{
-    list-style:nome;
+  .lista-fotos {
+    list-style: none;
   }
 
-  .lista-fotos .lista-fotos-item{
+  .lista-fotos .lista-fotos-item {
     display: inline-block;
   }
 
-  .imagem-responsiva{
-    width: 100%;
-  }
   .filtro {
     display: block;
-    width:25%;
+    width: 25%;
   }
 </style>
