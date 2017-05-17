@@ -3,12 +3,11 @@
   <div class="corpo">
     <h1 class="titulo">{{ titulo }}</h1>
 
-    <input type="search" class="filtro" v-on:input="filtro =$event.target.value" placeholder="filtro por foto">
-  {{ filtro }}
+    <input type="search" class="filtro" placeholder="filtro por foto">
 
     <ul class="lista-fotos">
 
-        <li class="lista-fotos-item" v-for="foto of fotosComFiltro">
+        <li class="lista-fotos-item" v-for="foto in fotos">
 
             <meu-painel :titulo="foto.titulo">
                 <img class="imagem-responsiva" :src="foto.url" :alt="foto.titulo">
